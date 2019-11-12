@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.TransferInfoDao">
+
+
+	<select id="findAllTransferInfo" parameterType="Map" resultType="TransferInfo">
+		SELECT
+			t.tid,
+			t.t_carid,
+			t.t_udid,
+			t.createtime,
+			t.t_rsid,
+			r.rsname,
+			t.t_ssid,
+			t.depart_time,
+			t.t_ueid,
+			t.`load`,
+			t.state,
+			t.delflag,
+			t.optid,
+			t.optime,
+			t.remark
+		FROM
+			t_transfer t,
+			t_recyclestationinfo r
+		WHERE
+			t.delflag=0
+		AND
+			t.t_rsid=r.rsid
+			<if test="searchByName!=null">
+				and t.tid like concat('%',#{searchByName},'%')
+			</if>
+			order by createtime desc
+			limit #{pageBean.start},#{pageBean.rows}
+	</select>
+	
+	<select id="findAllTransferInfoCount" parameterType="Map" resultType="Integer">
+		select
+			count(*)
+		from
+			t_transfer
+		where
+			delflag=0
+	</select>
+	
+	<!-- <select id="findrsnameById" parameterType="Integer" resultType="String">
+		select
+			rsname
+		from
+			t_recyclestationinfo
+		where
+			rsid=#{rsid}
+		and
+			delflag=0
+	</select> -->
+	
+	<select id="findIdByName" parameterType="String" resultType="Integer">
+		select
+			rsid
+		from
+			t_recyclestationinfo
+		where
+			rsname=#{rsname}
+		and
+			delflag=0
+	</select>
+	
+	
+	<select id="findSsidByRsid" parameterType="Integer" resultType="Integer">
+		select
+			ss_id
+		from
+			t_recyclestationinfo
+		where
+			rsid=#{t_rsid}
+		and
+			delflag=0
+	</select>
+	
+	
+	<select id="findUserNameByTudid" parameterType="Integer" resultType="String">
+		select
+			user_name
+		from
+			t_userinfo
+		where
+			user_id=#{t_udid}
+		and
+			delflag=0
+	</select>
+	
+	
+	
+	
+	<insert id="saveTransferInfo" parameterType="TransferInfo">
+		insert into
+			t_transfer(
+				t_carid,
+				t_udid,
+				createtime,
+				t_rsid,
+				t_ssid,
+				depart_time,
+				t_ueid,
+				`load`,
+				state,
+				delflag,
+				optid,
+				optime,
+				remark
+			)values(
+				#{t_carid},
+				#{t_udid},
+				#{createtime},
+				#{t_rsid},
+				#{t_ssid},
+				#{depart_time},
+				#{t_ueid},
+				#{load},
+				#{state},
+				#{delflag},
+				#{optid},
+				#{optime},
+				#{remark}
+			)
+	</insert>
+	
+	
+	<update id="updateTransferInfo" parameterType="TransferInfo">
+		update
+			t_transfer
+		set
+			t_carid=#{t_carid},
+			t_udid=#{t_udid},
+			t_rsid=#{t_rsid},
+			t_ssid=#{t_ssid},
+			depart_time=#{depart_time},
+			t_ueid=#{t_ueid},
+			`load`=#{load},
+			optime=#{optime},
+			remark=#{remark}
+		where
+			tid=#{tid}
+	</update>
+	
+	
+	<update id="deleteTransferInfo" parameterType="Integer">
+		update
+			t_transfer
+		set
+			delflag=1
+		where
+			tid=#{tid}
+	</update>
+	
+	
+	
+	
+</mapper>
+
+
+

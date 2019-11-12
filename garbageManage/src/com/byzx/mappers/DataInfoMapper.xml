@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.DataInfoDao">
+
+	<resultMap type="DataInfo"  id="DataDetailResultMap" >
+		<id column="data_id" property="data_id"/>
+		<result column="data_name" property="data_name"></result>
+		<result column="state" property="state"></result>
+		<result column="delflag" property="delflag"></result>
+		<result column="createtime" property="createtime"></result>
+		<result column="remark" property="remark"></result>
+		<collection property="dataDetailInfo" column="data_id" ofType="DataDetailInfo" select="com.byzx.dao.DataDetailInfoDao.findAllDatadetilInfo" > 
+		</collection>
+	</resultMap>
+	
+	<select id="findAllDataInfo" parameterType="Map" resultMap="DataDetailResultMap">
+		select 
+			data_id,
+			data_name,
+			state,
+			delflag,
+			createtime,
+			remark
+		from 
+			t_datainfo 
+		where 
+			delflag=0 
+		<if test="searchValue!=null">
+			and data_name like concat('%',#{searchValue},'%')
+		</if>
+		order by 
+			createtime desc
+		limit #{pageBean.start},#{pageBean.rows}
+	</select>
+	
+	<select id="findAllDataInfoCount" parameterType="Map" resultType="Integer">
+		select 
+			count(*) 
+		from 
+			t_datainfo 
+		where 
+			delflag=0 
+		<if test="searchValue!=null">
+			and data_name like concat('%',#{searchValue},'%')
+		</if>
+	</select>
+	
+	<insert id="addDataInfo" parameterType="DataInfo">
+		insert into
+			t_datainfo(
+				data_name,
+				state,
+				delflag,
+				createtime,
+				remark,
+				opt_id
+			)values(
+				#{data_name},
+				#{state},
+				#{delflag},
+				#{createtime},
+				#{remark},
+				#{opt_id}
+			)
+	</insert>
+	
+	<select id="getDataInfoMaxId" resultType="Integer">
+		select max(data_id) from t_datainfo where delflag=0;
+	</select>
+	
+	<update id="updateDataInfo" parameterType="DataInfo">
+		update 
+			t_datainfo
+		set 
+			data_name=#{data_name},
+			remark=#{remark}
+		where
+			data_id=#{data_id}
+	</update>
+	
+	<update id="deleteDataInfo" parameterType="Integer">
+		update 
+			t_datainfo
+		set 
+			delflag=1
+		where
+			data_id=#{data_id}
+	</update>
+</mapper>

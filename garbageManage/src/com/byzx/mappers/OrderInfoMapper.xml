@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.OrderInfoDao">
+
+	<select id="findAllUserInfo" parameterType="Map" resultType="OrderInfo">
+		select
+			o.oid,
+			o.odid,
+			o.o_uid,
+			r.r_nickname,
+			o.o_uaddress,
+			o.createtime,
+			o.regenerant,
+			o.o_weight,
+			o.receiving,
+			o.o_clerkid,
+			o.o_ucid,
+			o.o_money,
+			o.o_fintime,
+			o.delflag,
+			o.optid,
+			o.optime,
+			o.remark
+			
+		from
+			t_orderinfo o,
+			t_resident r
+		where
+			o.delflag=0
+		and
+			o.o_uid=r.r_id
+			<if test="searchByUserId!=null">
+				and r.r_nickname like concat('%',#{searchByUserId},'%')
+			</if>
+			order by o.createtime desc
+			limit #{pageBean.start},#{pageBean.rows}
+	</select>
+	
+	
+	<select id="findAllOrderInfoCount" parameterType="Map" resultType="Integer">
+		select
+			count(*)
+		from
+			t_orderinfo
+		where
+			delflag=0
+	</select>
+
+
+	<select id="findRidByNickname" parameterType="String" resultType="Integer">
+		select
+			r_id
+		from
+			t_resident
+		where
+			r_nickname=#{r_nickname}
+		and
+			delflag=0
+	</select>
+
+
+	<update id="updateOrderInfo" parameterType="OrderInfo">
+		update
+			t_orderinfo
+		set
+			o_uaddress=#{o_uaddress},
+			o_weight=#{o_weight},
+			remark=#{remark}
+		where
+			oid=#{oid}
+	</update>
+	
+	<update id="deleteOrderInfo">
+		update
+			t_orderinfo
+		set
+			delflag=1
+		where
+			oid=#{oid}
+	</update>
+
+
+
+</mapper>
+
+

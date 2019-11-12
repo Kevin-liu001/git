@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.RecycleStationInfoDao">
+
+	<resultMap type="RecycleStationInfo" id="ResultRecycleStationInfo">
+		<id property="rsid" column="rsid"></id>
+		<result property="ss_id" column="ss_id"/>
+		<result property="c_ucid" column="c_ucid"></result>
+		<result property="rsname" column="rsname"></result>
+		<result property="address" column="address"></result>
+		<result property="scope" column="scope"></result>
+		<result property="state" column="state"></result>
+		<result property="date" column="date"></result>
+		<result property="volume" column="volume"></result>
+		<result property="optid" column="optid"></result>
+		<result property="delflag" column="delflag"></result>
+		<result property="optime" column="optime"></result>
+		<result property="remark" column="remark"></result>
+		<collection property="recycleGoodsInfo" column="rsid" ofType="RecycleGoodsInfo" select="com.byzx.dao.RecycleGoodsInfoDao.findAllRecycleGoodsInfo"></collection>
+		<collection property="collectorInfo" column="rsid" ofType="CollectorInfo" select="com.byzx.dao.CollectorInfoDao.findAllCollectorInfo1"></collection>
+	</resultMap>
+	<select id="findAllRecycle" resultType="RecycleStationInfo">
+		select
+			rsid,
+			ss_id,
+			c_ucid,
+			rsname,
+			address,
+			scope,
+			state,
+			date,
+			volume,
+			optid,
+			delflag,
+			optime,
+			remark
+		from
+			t_recyclestationinfo
+		where
+			delflag = 0
+			
+	</select>
+	
+	<select id="findRecycleByAddress" parameterType="String" resultMap="ResultRecycleStationInfo">
+		select
+			rsid,
+			ss_id,
+			c_ucid,
+			rsname,
+			address,
+			scope,
+			state,
+			date,
+			volume,
+			optid,
+			delflag,
+			optime,
+			remark
+		from
+			t_recyclestationinfo
+		where
+			delflag = 0
+		and	
+			address=#{recycle_address}
+	</select>
+	
+	<select id="getrecycleStationInfoMaxId" resultType="Integer">
+		select
+			max(rsid)
+		from
+			t_recyclestationinfo
+		where
+			delflag = 0
+	</select>
+	
+	<insert id="saveRecycleInfo" parameterType="RecycleStationInfo">
+		insert into
+			t_recyclestationinfo(
+				rsid,
+				ss_id,
+				c_ucid,
+				rsname,
+				address,
+				scope,
+				state,
+				date,
+				volume,
+				optid,
+				delflag,
+				optime,
+				remark
+			)values(
+				#{rsid},
+				#{ss_id},
+				#{c_ucid},
+				#{rsname},
+				#{address},
+				#{scope},
+				#{state},
+				#{date},
+				#{volume},
+				#{optid},
+				#{delflag},
+				#{optime},
+				#{remark}
+			)
+	</insert>
+	
+	<update id="deleteRecycleInfo" parameterType="Integer">
+		update
+			t_recyclestationinfo
+		set
+			delflag = 1
+		where
+			rsid=#{rsid}
+	</update>
+	
+	<update id="updateRecycleInfo" parameterType="RecycleStationInfo">
+		update
+			t_recyclestationinfo
+		set
+			ss_id=#{ss_id},
+			c_ucid=#{c_ucid},
+			rsname=#{rsname},
+			address=#{address},
+			scope=#{scope},
+			state=#{state},
+			date=#{date},
+			volume=#{volume},
+			optid=#{optid},
+			delflag=#{delflag},
+			optime=#{optime},
+			remark=#{remark}
+		where
+			rsid=#{rsid}
+	</update>
+</mapper>
+
+
+
+
+
+
+

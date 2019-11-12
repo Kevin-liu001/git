@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.BuildInfoDao">
+
+	<resultMap type="BuildInfo" id="ResultBuildInfo">
+		<id property="b_id" column="b_id"></id>
+		<result property="b_unit" column="b_unit"/>
+		<result property="b_floor" column="b_floor"/>
+		<result property="b_population" column="b_population"></result>
+		<result property="optid" column="optid"></result>
+		<result property="delflag" column="delflag"></result>
+		<result property="state" column="state"></result>
+		<result property="optime" column="optime"></result>
+		<result property="remark" column="remark"></result>
+	</resultMap>
+	<select id="findAllBuildInfo" parameterType="Integer" resultMap="ResultBuildInfo">
+		select
+			b_id,
+			cm_id,
+			b_unit,
+			b_floor,
+			b_population,
+			optid,
+			delflag,
+			state,
+			optime,
+			remark
+		from
+			t_building
+		where 
+			delflag = 0
+		and 
+			cm_id=#{cm_id}
+	</select>
+	<insert id="addBuildInfo" parameterType="BuildInfo">
+		insert into
+			t_building(
+				cm_id,
+				b_unit,
+				b_floor,
+				b_population,
+				optid,
+				delflag,
+				state,
+				optime,
+				remark
+			)values(
+				#{cm_id},
+				#{b_unit},
+				#{b_floor},
+				#{b_population},
+				#{optid},
+				#{delflag},
+				#{state},
+				#{optime},
+				#{remark}
+			)
+	</insert>
+	
+	<update id="deleteBuildInfo" parameterType="Integer"> 
+		update 
+			t_building
+		set
+			delflag=1
+		where
+			cm_id=#{cm_id}
+	</update>
+	
+	<update id="deleteBuildInfoById" parameterType="Integer"> 
+		update 
+			t_building
+		set
+			delflag=1
+		where
+			b_id=#{b_id}
+	</update>
+	
+	<update id="updateBuildInfo" parameterType="BuildInfo"> 
+		update 
+			t_building
+		set
+			cm_id=#{cm_id},
+			b_unit=#{b_unit},
+			b_floor=#{b_floor},
+			b_population=#{b_population},
+			remark=#{remark}
+		where
+			b_id=#{b_id}
+	</update>
+</mapper>

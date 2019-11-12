@@ -1,0 +1,17 @@
+eclipse.preferences.version=1
+encoding//src/com/byzx/controller/BiddDocumentInfoController.java=UTF-8
+encoding//src/com/byzx/controller/CommunInfoController.java=UTF-8
+encoding//src/com/byzx/controller/DataInfoController.java=UTF-8
+encoding//src/com/byzx/controller/GoodsDetailInfoController.java=UTF-8
+encoding//src/com/byzx/controller/GoodsInfoController.java=UTF-8
+encoding//src/com/byzx/controller/RecycleStationInfoCotroller.java=UTF-8
+encoding//src/com/byzx/controller/ResidentInfoController.java=UTF-8
+encoding//src/com/byzx/dao/BiddDocumentInfoDao.java=UTF-8
+encoding//src/com/byzx/service/RecycleStationInfoService.java=UTF-8
+encoding//src/com/byzx/service/impl/AllotInfoServiceImpl.java=UTF-8
+encoding//src/com/byzx/service/impl/BiddDocumentInfoServiceImpl.java=UTF-8
+encoding//src/com/byzx/service/impl/CommunInfoServiceImpl.java=UTF-8
+encoding//src/com/byzx/service/impl/GoodsDetailInfoServiceImpl.java=UTF-8
+encoding//src/com/byzx/service/impl/GoodsInfoServiceImpl.java=UTF-8
+encoding//src/com/byzx/service/impl/RecycleStationInfoServiceImpl.java=UTF-8
+encoding//src/com/byzx/service/impl/SortingStationInfoserviceImpl.java=UTF-8

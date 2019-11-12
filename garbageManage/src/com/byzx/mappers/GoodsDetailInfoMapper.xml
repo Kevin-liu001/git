@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.GoodsDetailInfoDao">
+	<select id="findAllGoodsDetailInfo" parameterType="Map" resultType="GoodsDetailInfo">
+		select 
+			gt_id,
+			gt_code,
+			gt_name,
+			gt_state,
+			gt_delflag,
+			gt_creattime,
+			gt_remark,
+			gt_optid
+		from 
+			t_goodsdetail
+		where 
+			gt_delflag=0 
+		<if test="s_roleName!=null">
+			and gt_name like concat('%',#{s_roleName},'%')
+		</if>
+		order by 
+			gt_creattime desc
+		limit #{pageBean.start},#{pageBean.rows}
+	</select>
+	
+	<select id="findAllGoodsDetailInfoCount" parameterType="Map" resultType="Integer">
+		select 
+			count(*) 
+		from 
+			t_goodsdetail 
+		where 
+			gt_delflag=0 
+		<if test="s_roleName!=null">
+			and gt_name like concat('%',#{s_roleName},'%')
+		</if>
+	</select>
+	
+	<insert id="saveGoodsDetailInfo" parameterType="GoodsDetailInfo">
+		insert into
+			t_goodsdetail(
+				gt_code,
+				gt_name,
+				gt_state,
+				gt_delflag,
+				gt_creattime,
+				gt_remark,
+				gt_optid
+			)
+		values(
+			#{gt_code},
+			#{gt_name},
+			#{gt_state},
+			#{gt_delflag},
+			#{gt_creattime},
+			#{gt_remark},
+			#{gt_optid}
+		)
+	</insert>
+	
+	<update id="updateGoodsDetailInfo" parameterType="GoodsInfo">
+		update
+			t_goodsdetail
+		set
+			gt_code=#{gt_code},
+			gt_name=#{gt_name},
+			gt_remark=#{gt_remark}
+		where
+			gt_id=#{gt_id}
+	</update>
+	
+	<update id="deleteGoodsDetailInfo" parameterType="Integer">
+		update
+			t_goodsdetail
+		set
+			gt_delflag=1
+		where
+			gt_id=#{gt_id}
+	</update>
+</mapper>

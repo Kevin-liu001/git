@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>用户管理</title>
+<link href="../css/base.css" rel="stylesheet">
+<link rel="stylesheet" href="../custom/uimaker/easyui.css">
+<link rel="stylesheet" type="text/css" href="../custom/uimaker/icon.css">
+<link rel="stylesheet" href="../css/providers1.css">
+<script type="text/javascript" src="../custom/jquery.min.js"></script>
+<script type="text/javascript" src="../custom/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../custom/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+	<!-- 调拨列表start -->
+	<div class="container" style="width: 100%;">
+		<table class="easyui-datagrid" id="dgallotInfo" style="width: 100%;"
+			data-options="
+                rownumbers:true,
+                pagination:true,
+                fitColumns:true,
+                striped:true,
+                collapsible:true,
+                toolbar:'#tb',
+                pageSize:10,
+                url:'../allotInfo/findAllotInfo.do'">
+			<thead>
+				<tr>
+					<th field="ck" checkbox="true" align="center" width="50px"></th>
+					<th field="a_aid" align="center" width="50px">调拨单号</th>
+					<th field="c_carid" align="center" width="50px">车辆编码</th>
+					<th field="a_depart" align="center" width="50px">出发地</th>
+					<th field="a_destination" align="center" width="50px">目的地</th>
+					<th field="a_time" align="center" width="50px">调拨时间</th>
+					<th field="remark" align="center" width="60px">备注</th>
+				</tr>
+			</thead>
+		</table>
+		<!--  datagrid工具栏（增删改查）start -->
+		<div id="tb" style="padding: 0 30px; width: 100%;">
+			<div class="opt-buttons" style="width: 100%;">
+				<a href="javascript:newallotInfo()" class="easyui-linkbutton"
+					data-options="selected:true">新增</a> <a
+					href="javascript:updateallotInfo()" class="easyui-linkbutton">修改</a>
+				<a href="javascript:deleteallotInfo()" class="easyui-linkbutton">删除</a>
+				<a href="#" class="easyui-linkbutton">导出</a>
+				<div class="conditions" style="float: right; margin-right: 20px">
+					<span class="con-span">车辆编码: </span> <input class="easyui-textbox"
+						type="text" name="searchByNumber" id="searchByNumber"
+						style="width: 166px; height: 35px; line-height: 35px;"></input> <a
+						href="javascript:searchallotInfoByNumber()" class="easyui-linkbutton"
+						iconCls="icon-search" data-options="selected:true">查询</a>
+				</div>
+			</div>
+		</div>
+		<!--  datagrid工具栏（增删改查）end -->
+	</div>
+	<!-- 调拨列表end -->
+	<!-- 调拨操作form表单—START -->
+	<div id="dlg-buttons">
+		<a href="javascript:saveallotInfo()" class="easyui-linkbutton" iconCls="icon-ok">保存</a> 
+		<a href="javascript: closeAllotAddDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+	</div>
+
+	<div id="dlgallotInfo" class="easyui-dialog"
+		style="width: 570px; height: 350px; padding: 10px 20px" closed="true"
+		buttons="#dlg-buttons" closable="true">
+		<form id="formallotInfo" method="post">
+			<table cellspacing="5px">
+				<p>
+					<input type="hidden" id="a_aid" name="a_aid" />
+				</p>
+				<tr>
+					<td>车辆编码：</td>
+					<td><input type="text" id="c_carid" name="c_carid"
+						class="easyui-validatebox" required="true" /></td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>出发地：</td>
+					<td><input type="text" id="a_depart" name="a_depart"
+						class="easyui-validatebox" required="true" /></td>
+				</tr>
+				<tr>
+					<td>目的地：</td>
+					<td><input type="text" id="a_destination" name="a_destination"
+						class="easyui-validatebox" required="true" /></td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td>备注：</td>
+					<td colspan="4"><textarea rows="7" cols="50" name="remark"
+							id="remark"></textarea></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 调拨操作form表单—END -->
+
+</body>
+<script type="text/javascript">
+	var saveallotInfoUrl="../allotInfo/saveallotInfo.do";
+	var updateallotInfoUrl="../allotInfo/updateallotInfo.do";
+	var curUrl="";
+	function searchallotInfoByNumber() {
+		$("#dgallotInfo").datagrid("load", {
+			searchByNumber : $("#searchByNumber").val()
+		});
+	}
+	
+	function newallotInfo(){
+		$("#dlgallotInfo").dialog("open").dialog("setTitle","新增车辆");
+		curUrl=saveallotInfoUrl;
+	}
+
+
+
+	function saveallotInfo(){
+		$("#formallotInfo").form("submit",{
+			url:curUrl,
+			onSubmit:function(){
+				return $(this).form("validate");
+			},
+			success:function(result){
+				var result=eval('('+result+')');
+				if(result.msg){
+					$.messager.alert("系统提示","保存成功","info");
+					closeAllotAddDialog();
+					$("#dgallotInfo").datagrid("reload");
+					curUrl="";
+				}else{
+					$.messager.alert("系统提示","系统繁忙，请稍后再试","info");
+				}
+			}
+		});
+	}
+	
+	function closeAllotAddDialog(){
+		$("#formallotInfo").form("clear");
+		$("#dlgallotInfo").dialog("close");
+	}
+	
+	$("#c_carid").blur(function(){
+		var c_carid=$("#c_carid").val();
+		$.ajax({
+			url:"../allotInfo/findallotInfoByUNumber.do",
+			type:"post",
+			dataType:"json",
+			data:{c_carid:c_carid},
+			success:function(result){
+				if(result.msg){
+					$.messager.alert("系统提示","当前车辆编码已被占用","warning");
+					$("#c_carid").val("");
+				}
+			}
+		});
+	});
+	
+	function updateallotInfo(){
+		var rows=$("#dgallotInfo").datagrid("getSelections");
+		if(rows.length!=1){
+			$.messager.alert("系统提示","请选择一条修改","warning");
+			return false;
+		};
+		$("#formallotInfo").form("load",rows[0]);
+		$("#dlgallotInfo").dialog("open").dialog("setTitle","修改车辆信息");
+		curUrl=updateallotInfoUrl;
+	}
+	
+	function deleteallotInfo(){
+		var rows=$("#dgallotInfo").datagrid("getSelections");
+		if(rows.length==0){
+			$.messager.alert("系统提示","请选择一条删除","warning");
+			return false;
+		}
+		var allot_ids=[];
+		$.each(rows,function(index,row){
+			allot_ids.push(row.a_aid);
+		});
+		var allotIds=allot_ids.join(",");
+		$.messager.confirm("系统提示","您确定要删除<font size=3 color=red>"+rows.length+"</font>内容吗？",function(r){
+			if(r){
+				$.ajax({
+					url:"../allotInfo/deleteallotInfo.do",
+					type:"post",
+					dataType:"json",
+					data:{allotIds:allotIds},
+					success:function(result){
+						if(result.msg){
+							$.messager.alert("系统提示","已删除"+result.count+"条","info");
+							$("#dgallotInfo").datagrid("reload");
+						}else{
+							$.messager.alert("系统提示","系统繁忙，请稍后再试","info");
+						}
+					}
+				});
+			}
+		});
+	}
+</script>
+
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

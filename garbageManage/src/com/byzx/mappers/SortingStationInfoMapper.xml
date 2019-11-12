@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.SortingStationInfoDao">
+
+<resultMap type="SortingStationInfo" id="resultSortingStationInfo">
+	<id property="ss_id" column="ss_id"/>
+	<result property="ss_name" column="ss_name"/>
+	<result property="ss_state" column="ss_state"/>
+	<result property="delflag" column="delflag"/>
+	<result property="ss_date" column="ss_date"/>
+	<result property="remark" column="remark"/>
+	<result property="opt_id" column="opt_id"/>
+	<result property="ss_capacity" column="ss_capacity"/>
+	<result property="ss_coordinate" column="ss_coordinate"/>
+	<result property="optime" column="optime"/>
+	<collection property="sorterInfo" column="ss_id" ofType="SorterInfo" select="com.byzx.dao.SorterInfoDao.findAllSSByAddress"></collection>
+	
+	<collection property="sortGoodsInfo" column="ss_id" ofType="SortGoodsInfo" select="com.byzx.dao.SortGoodsInfoDao.findAllSSByAddress"></collection>
+	
+</resultMap>
+	<select id="findAllSortingStation" resultType="SortingStationInfo">
+			select 
+				ss_id,
+				s_usid,
+				ss_name,
+				ss_state,
+				sg_id,
+				rs_ids,
+				ss_date,
+				ss_capacity,
+				ss_address,
+				ss_coordinate,
+				remark,
+				delflag,
+				opt_id,
+				optime
+			from
+				t_sortingstationinfo
+			where
+				delflag=0 
+				
+	</select>
+	
+	<select id="findAllSSByAddress" parameterType="String" resultMap="resultSortingStationInfo">
+	
+			select 
+				ss_id,
+				s_usid,
+				ss_name,
+				ss_state,
+				sg_id,
+				rs_ids,
+				ss_date,
+				ss_capacity,
+				ss_address,
+				ss_coordinate,
+				remark,
+				delflag,
+				opt_id,
+				optime
+			from
+				t_sortingstationinfo
+			where
+				delflag=0 
+			and	
+				ss_address=#{ss_address}
+	</select>
+	<!-- 获取主表最大ID -->
+	<select id="getSortingStationInfoMaxId" resultType="Integer">
+		select max(ss_id) from t_sortingstationinfo where delflag=0;
+	</select>
+	<!-- 分拣站新增按钮 -->
+	<insert id="addSortingStationInfo" parameterType="SortingStationInfo">
+		insert into t_sortingstationinfo(
+			ss_name,
+			ss_state,
+			ss_date,
+			ss_capacity,
+			ss_address,
+			ss_coordinate,
+			remark,
+			delflag,
+			opt_id
+			)
+		values(
+			#{ss_name},
+			#{ss_state},
+			#{ss_date},
+			#{ss_capacity},
+			#{ss_address},
+			#{ss_coordinate},
+			#{remark},
+			#{delflag},
+			#{opt_id}
+		)
+	</insert>
+	<!-- 分拣站删除按钮 -->
+	<update id="deleteSortingStationInfo" parameterType="Integer">
+		update
+			t_sortingstationinfo
+		set
+			delflag=1
+		where
+			ss_id=#{ss_id}
+	</update>
+	
+	<!-- 分拣站修改按钮 -->
+	<update id="updateSortingStationInfo" parameterType="SortingStationInfo">
+		update
+			t_sortingstationinfo
+		set
+			ss_name=#{ss_name},
+			ss_state=#{ss_state},
+			ss_date=#{ss_date},
+			ss_capacity=#{ss_capacity},
+			ss_address=#{ss_address},
+			ss_coordinate=#{ss_coordinate},
+			remark=#{remark}
+		where
+			ss_id=#{ss_id}
+	</update>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.ResidentInfoDao">
+	<select id="findResidentInfo" parameterType="ResidentInfo" resultType="ResidentInfo">
+		select * from t_resident where delflag=0 and r_name=#{r_name} and r_password=#{r_password}
+	</select>
+	
+	<select id="findResidentInfoByName" parameterType="String" resultType="Integer">
+		select count(r_name) from t_resident where r_name=#{r_name}
+	</select>
+
+	<insert id="insertResidentInfo" parameterType="ResidentInfo">
+		insert into t_resident(
+			r_name,
+			r_nickname,
+			r_password,
+			r_sex,
+			iDCard,
+			address,
+			contact,
+			regdata,
+			remark,
+			delflag,
+			opt_id,
+			state
+		)
+		values(
+			#{r_name},
+			#{r_nickname},
+			#{r_password},
+			#{r_sex},
+			#{iDCard},
+			#{address},
+			#{contact},
+			#{regdata},
+			#{remark},
+			#{delflag},
+			#{opt_id},
+			#{state}
+		)
+	</insert>
+
+</mapper>

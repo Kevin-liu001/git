@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>入库管理</title>
+		<link href="../css/base.css" rel="stylesheet">
+		<link rel="stylesheet" href="../custom/uimaker/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../custom/uimaker/icon.css">
+		<link rel="stylesheet" href="../css/providers1.css">
+		<script type="text/javascript" src="../custom/jquery.min.js"></script>
+	    <script type="text/javascript" src="../custom/jquery.easyui.min.js"></script>
+	    <script type="text/javascript" src="../custom/easyui-lang-zh_CN.js"></script>
+	</head>
+<body>
+ 	<div class="container" style="width:100%;">
+       <table class="easyui-datagrid"  id="dgEnshrineInfo" style="width:100%;"    data-options="
+                rownumbers:true,
+                singleSelect:false,
+                autoRowHeight:false,
+                pagination:true,
+                fitColumns:true,
+                striped:true,
+                collapsible:true,
+                toolbar:'#tb',
+                pageSize:10,
+                url:'../enshrineInfo/findAllEnshrineInfo.do'">
+            <thead>
+                <tr>
+                	<th field="ck" checkbox="true" align="center" width="50px"></th>
+                    <th field="warehous_id" align="center" width="50px">入库编号</th>
+                    <th field="warehous_name" align="center" width="50px">物品名称</th>
+                    <th field="classes" align="center" width="50px">类别</th>
+                    <th field="weight" align="center" width="50px" >重量</th>
+                    <th field="s_usid" align="center" width="50px">分拣员</th>
+                    <th field="collect" align="center" width="50px">入库时间</th>
+                    <th field="remark" align="center" width="60px">备注</th>
+                    <th field="state" align="center" width="60px">状态</th>
+                    <th field="opt_id" align="center" width="60px">操作人员</th>
+                </tr>
+            </thead>
+        </table>
+      <div id="tb" style="padding:0 30px;width:100%;">
+        <div class="opt-buttons" style="width:100%;">
+            <a href="javascript:newEnshrineInfo()" class="easyui-linkbutton" data-options="selected:true">新增</a>
+            <a href="javascript:updateEnshrineInfo()" class="easyui-linkbutton">修改</a>
+            <a href="javascript:deleteEnshrineInfo()" class="easyui-linkbutton">删除</a>
+            <a href="#" class="easyui-linkbutton">导出</a>
+        	<div class="conditions" style="float:right;margin-right: 20px">
+	          	<span class="con-span">物品名称: </span>
+	          	<input class="easyui-textbox" type="text" name="searchByName"  id="searchByName" style="width:166px;height:35px;line-height:35px;"></input>
+	          	 <a href="javascript:searchEnshrineInfoByName()" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
+       		</div>
+        </div>
+      </div>
+    </div> 
+    
+    <!-- 用户操作form表单—START -->
+	     <div id="dlg-buttons">
+		      <a href="javascript:saveEnshrineInfo()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+		      <a href="javascript: closeEnshrineAddDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+		 </div> 
+	    
+	   	<div id="dlgEnshrineInfo" class="easyui-dialog" style="width: 570px;height: 350px;padding: 10px 20px" closed="true" buttons="#dlg-buttons" closable="false">
+		    <form id="formEnshrineInfo" method="post">
+		          <table cellspacing="5px">
+			         <p><input type="hidden" id="warehous_id" name="warehous_id" /></p>
+			         <tr>
+			              <td>物品名称：</td>
+			              <td><input type="text" id="warehous_name" name="warehous_name" class="easyui-validatebox" required="true"/></td>
+			              <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			              <td>垃圾类别：</td>
+			              <td><select class="easyui-combobox" name="classes" width="10px" height="20px"><option value="js">金属制品</option><option value="zz">纸制品</option><option value="sl">塑料制品</option><option value="bl">玻璃制品</option><option value="dz">电子物品</option><option value="zz">针织制品</option></select></td>
+			         </tr>
+			         <tr>
+			              <td>重量：</td>
+			              <td><input type="text" id="weight" name="weight" class="easyui-validatebox" required="true"/></td>
+			              <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			              <td>分拣员：</td>
+			              <td>
+				                   <input type="text" id="user_name" name="user_name" class="easyui-validatebox" required="true" readonly="readonly"/>
+			              </td>
+					               <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					               <td colspan="2"><a href="javascript:openSorterChooseDialog()" class="easyui-linkbutton">选择分拣员</a></td>
+			         </tr>
+			             
+			         <!-- <tr>
+			         	<td>操作人：</td>
+			            <td><input type="text" id="opt_id" name="opt_id" class="easyui-validatebox" required="true"/></td>
+			            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
+			            <td>状态：</td>
+			            <td><input type="text" id="state" name="state" class="easyui-validatebox" required="true"/></td>
+			         </tr> -->
+			         <tr>
+			              <td>备注：</td>
+			              <td colspan="4">
+			                     <textarea rows="7" cols="50" name="remark" id="remark"></textarea>
+			              </td>
+			         </tr>
+			         
+			    </table>
+	       </form>
+	   </div>
+	  <!-- 用户操作form表单—END -->  
+	   
+	   <!-- 分拣员选择 -->
+	<div id="dlgSorterInfo" class="easyui-dialog" iconCls="icon-search" style="width: 500px;height: 480px;padding: 10px 20px" closed="true" buttons="#dlg2-buttons" title="请选择分拣员">
+      <div style="height: 40px" align="center">
+	                    分拣员姓名：<input type="text" id="user_name" name="user_name" onkeydown="if(event.keyCode==13) searchSorter()"/>
+	          <a href="javascript:searchSorter()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+	  </div>
+      <div style="height: 350px;">
+	       <table id="dgSorterInfo" title="查询结果" class="easyui-datagrid" fitColumns="true" pagination="true" rownumbers="true" fit="true" singleSelect="true" url="../sorterInfo/findAllSorterInfo.do">
+	            <thead>
+				    <tr>
+				          <th field="ck" checkbox="true" align="center" width="50px"></th>
+				          <th field="user_id" width="50" align="center">编号</th>
+				          <th field="user_name" width="100" align="center">分拣员姓名</th>
+				          <th field="remark" width="50" align="center">备注</th>
+				   </tr>
+	      		</thead>
+	    	</table>
+		</div>
+ 	 </div>
+ 	 
+    <div id="dlg2-buttons">
+	      <a href="javascript:chooseSorter()" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+	      <a href="javascript:closeSorterDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+	</div>  
+	
+	<script type="text/javascript">
+	var newEnshrineInfoUrl="../enshrineInfo/saveEnshrineInfo.do";
+	var updateEnshrineInfoUrl="../enshrineInfo/updateEnshrineInfo.do"
+	var urls="";
+		//查询按钮
+		function searchEnshrineInfoByName() {
+		$("#dgEnshrineInfo").datagrid("load",{
+			searchByName:$("#searchByName").val()
+			})
+		}
+		//新增物品
+		function newEnshrineInfo(){
+			$("#dlgEnshrineInfo").dialog("open").dialog("setTitle","新增数据");
+			urls = newEnshrineInfoUrl;
+		}
+		
+		/* 打开角色按钮 */
+ 		function openSorterChooseDialog(){
+ 			$("#dlgSorterInfo").dialog("open");
+ 		}
+ 		
+ 		function searchSorter(){
+ 			$("#dgSorterInfo").datagrid("load",{
+ 				a_userid:$("#a_userid").val()
+ 			});
+ 		}
+ 		/* 选择一个角色 */
+ 		function chooseSorter(){
+ 			var row=$("#dgSorterInfo").datagrid("getSelected");
+ 			if(row==null){
+ 				$.messager.alert("系统提示","请选择一个角色","info");
+ 				return false;
+ 			}
+ 			$("#s_usid").val(row.s_usid);
+ 			$("#user_name").val(row.user_name);
+ 			closeSorterDialog();
+ 		}
+ 		/* 关闭角色按钮 */
+ 		function closeSorterDialog(){
+ 			$("#dlgSorterInfo").dialog("close");
+ 		}
+		
+		//新增确认按钮
+ 		function saveEnshrineInfo(){
+ 			/* console.info($("#formEnshrineInfo").serialize()); */
+ 			$("#formEnshrineInfo").form("submit",{
+ 				url:urls,
+ 	 			onsubmit:function(){
+ 	 				return $(this).form("validate");
+ 	 			},
+ 	 			success:function(result){
+ 	 				var result=eval('('+result+')');
+ 	 				console.log(result.msg);
+ 	 				if(result.msg){
+ 	 					$.messager.alert("系统提示","保存成功","info");
+ 	 					closeEnshrineAddDialog();
+ 	 					$("#dgEnshrineInfo").datagrid("reload");
+ 	 				}else{
+ 	 					$.messager.alert("系统提示","系统繁忙，请稍后再操作","info");
+ 	 				}		
+ 	 			}
+ 			})
+ 			
+ 		}
+ 		//新增数据的关闭按钮及清除表单
+ 		function closeEnshrineAddDialog(){
+ 			$("#formEnshrineInfo").form("clear");
+ 			$("#dlgEnshrineInfo").dialog("close");
+ 		}
+ 		//添加用户时提示该用户存不存在
+ 		$("#warehous_name").blur(function(){
+ 			var warehous_name=$("#warehous_name").val();
+ 			$.ajax({
+ 				url:"../enshrineInfo/findEnshrineInfoByUName.do",
+ 				type:"post",
+ 				dataType:"json",
+ 				data:{warehous_name:warehous_name},
+ 				success:function(result){
+ 					if(result.msg){
+ 						$.messager.alert("系统提示","当前物品已存在","info");
+ 						$("#warehous_name").val("");
+ 					}
+ 				}
+ 			});
+ 		});
+ 		
+ 		//修改数据
+ 		function updateEnshrineInfo(){
+ 			var rows=$("#dgEnshrineInfo").datagrid("getSelections");
+ 			if(rows.length!=1){
+ 				$.messager.alert("系统提示","请选择一条数据","warning");
+ 				return false;
+ 			}
+ 			$("#formEnshrineInfo").form("load",rows[0]);
+ 			$("#dlgEnshrineInfo").dialog("open").dialog("setTitle","修改数据信息");
+ 			urls= updateEnshrineInfoUrl;
+ 		}
+ 		
+ 		
+ 		//删除物品
+ 		function deleteEnshrineInfo(){
+ 			var rows=$("#dgEnshrineInfo").datagrid("getSelections");
+ 			if(rows.length==0){
+ 				$.messager.alert("系统提示","请选择需要删除的用户","warning");
+ 				return false;
+ 			}
+ 			var warehous_ids=[];
+ 			$.each(rows,function(index,row){
+ 				warehous_ids.push(row.warehous_id);
+ 			});
+ 			var warehousIds=warehous_ids.join(",");
+ 			$.messager.confirm("系统提示","确认删除<font size=5 color=red>'" + rows.length + "'</font>位用户？",function(r){
+ 				if(r){
+ 					$.ajax({
+ 						url:"../enshrineInfo/deleteEnshrineInfo.do",
+ 						type:"post",
+ 						dataType:"json",
+ 						data:{warehousIds:warehousIds},
+ 						success:function(result){
+ 							if(result.msg){
+ 		 	 					$.messager.alert("系统提示","删除成功","info");
+ 		 	 					closeEnshrineAddDialog();
+ 		 	 					$("#dgEnshrineInfo").datagrid("reload");
+ 		 	 				}else{
+ 		 	 					$.messager.alert("系统提示","系统繁忙，请稍后再操作","info");
+ 		 	 				}	
+ 						}
+ 					});
+ 				}
+ 			});
+ 		}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</script>
+	</body>
+</html>

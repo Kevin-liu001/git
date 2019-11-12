@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+        <title>垃圾分类信息管理系统</title>
+        <link rel="stylesheet" href="../fonts/iconfont.css"/>
+        <link rel="stylesheet" href="../css/font.css"/>
+        <link rel="stylesheet" href="../css/mui.css"/>
+        <link rel="stylesheet" href="../css/weui.min.css"/>
+        <link rel="stylesheet" href="../css/jquery-weui.min.css"/>
+        <link rel="stylesheet" href="../css/animate.css"/>
+        <link rel="stylesheet" href="../css/pages/login.css"/>
+        <link rel="stylesheet" href="../custom/uimaker/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../custom/uimaker/icon.css">
+		<link rel="stylesheet" href="../css/providers1.css">
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script type="text/javascript" src="../custom/jquery.min.js"></script>
+	    <script type="text/javascript" src="../custom/jquery.easyui.min.js"></script>
+	    <script type="text/javascript" src="../custom/easyui-lang-zh_CN.js"></script>
+    </head>
+     <div class="header">
+        	<img src="../images/login_logo_w.png">
+            <h2>垃圾分类居民用户登录平台</h2>
+            <div class="alert alert-error" style="color: red;">
+				 <i class="iconfont">&#xe62e;</i>
+				 <span id="massagers" style="font-size: 16px;font-weight: bold;">请输入用户信息</span>
+			</div>
+		</div>
+        <div class="login-wrap">
+            <div class="login-box">
+                <form action="../userLogin/login.do" method="post" id="form1">
+		            <div class="input-wrap" style="position:relative;display:inline">               	
+						<input type="text" name="r_name" id="r_name" onblur="checkName()" placeholder="请输入用户名">
+					</div>
+					<div class="input-wrap" style="position:relative;display:inline">									
+						<input type="password" name="r_password" id="r_password" onblur="checkPwd()" placeholder="请输入密码">
+					</div>
+					<div class="input-wrap" style="position:relative;display:inline">									
+						<input type="password" id="r_password1" onblur="checkPwd1()" placeholder="请确认密码">
+					</div>
+					<div class="input-wrap" style="position:relative;display:inline">									
+						<input type="text" name="iDCard" id="iDCard" onblur="checkIdCard()" placeholder="请输入身份证号">
+					</div>
+					<div class="input-wrap" style="position:relative;display:inline">									
+						<input type="text" name="address" id="address" placeholder="请输入家庭住址">
+					</div>
+					<div class="input-wrap" style="position:relative;display:inline">									
+						<input type="text" name="contact" id="contact" onblur="checkPhone()" placeholder="请输入联系电话">
+					</div>		
+                </form>
+            </div>
+			<br>
+            <a href="javascript:register()" class="weui_btn login-btn weui_btn_primary">立即注册</a> 
+            <a href="javascript:login()" class="weui_btn login-btn weui_btn_primary">返回登录</a>                
+        </div>       
+			<div class="footer">
+					<a href="javascript:;">关于我们</a>
+					<a href="javascript:;">法律声明</a>
+					<a href="javascript:;">服务条款</a>
+					<a href="javascript:;">联系方式</a>
+			</div>		
+	</body>
+	<script type="text/javascript">
+	 /* 验证用户名不能重复 */
+	function checkName(){
+    		var r_name= $("#r_name").val();
+           var rule=/^[A-Za-z0-9]+$/;
+           if(r_name=="") {
+           	$("#massagers").html("*请输入用户名");
+               return false;
+           }else if(!rule.test(r_name)){
+	           	$("#massagers").html("*请输入正确的用户名");
+	           	$("#r_name").val("");
+               	$("#r_name").attr("value", "")
+               	return false;
+           }else{
+           		$.ajax({
+	           		url:"../userLogin/findResidentInfoByName.do",
+	           		type:"post",
+	           		dataType:"json",
+	           		data:{
+	           			r_name:r_name
+	           		},
+	           		success:function(result){
+	           			if(result.msg){
+	           				$("#massagers").html("*该用户名已存在");
+	           				 $("#r_name").val("");
+	           			}
+	           		}
+           		});
+           }
+    }
+	 /* 验证密码格式 */
+	function checkPwd(){
+		var r_password=$("#r_password").val();
+        var rule2 = /^[a-z]\w{6,16}$/;
+        if(r_password=="") {
+        	$("#massagers").html("*请输入密码");
+        	return false;
+        } else if(!rule2.test(r_password)) {
+        	$("#massagers").html("*密码为6-16位，请以小写字母开头");
+        	$("#r_password").val("");
+            $("#r_password").attr("value", "")
+            return false;
+        }
+	}
+	/* 验证确认密码 */	
+	function checkPwd1(){
+		var r_password1=$("#r_password1").val();
+		var r_password=$("#r_password").val();
+        if(r_password1=="") {
+        	$("#massagers").html("*请再次输入密码");
+            return false;
+        } else if(r_password!=r_password1) {
+        	$("#massagers").html("*两次密码不一致");
+        	$("#r_password1").val("");
+            $("#r_password1").attr("value", "")
+            return false;
+        }
+	}
+	 /* 身份证验证 */
+	function checkIdCard(){
+		var iDCard = $("#iDCard").val()
+        var rule4 =/(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}$)/;
+        if(iDCard ==""){
+        	$("#massagers").html("*请输入身份证号");
+        	return false;
+        }else if(iDCard.length!=18){
+        	$("#massagers").html("*身份证号为18位");
+    		$("#iDCard").val("");
+            $("#iDCard").attr("value", "")
+            return false;
+        }
+	}
+	 /* 手机号验证 */
+	function checkPhone(){
+		var contact = $("#contact").val();
+        var rule4 =/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/;
+        if(contact ==""){
+        	$("#massagers").html("*请输入手机号");
+        	return false;
+        }else if(contact.length!=11){
+        	$("#massagers").html("*请输入11位手机号");;
+    		$("#contact").val("");
+            $("#contact").attr("value", "")
+            return false;
+    	}
+	}
+	
+	 //地址验证
+	 /* function checkDd(){
+		 var address=$("#address").val;
+		 if(address==""){
+			 $("#massagers").html("*请输入地址");
+		 }else if(address.length!=6){
+			 $("#massagers").html("*请输入正确的地址");
+			 $("#address").val("");
+	         $("#address").attr("value", "")
+	         return false;
+		 } 
+	 } */
+	/* 点击注册按钮触发事件*/
+	function register(){
+		 console.info(JSON.stringify($("#form1").serialize()));
+    	$("#form1").form("submit",{	
+			url:"../userLogin/insertResidentInfo.do",
+ 			onsubmit:function(){
+ 				return $(this).form("validate");
+ 			},
+ 			success:function(result){
+ 				var result=eval('('+result+')');
+ 				console.log(result.msg);
+ 				if(result.msg){
+ 					$.messager.alert("系统提示","注册成功","info");	
+ 					$("#form1").form("clear");
+ 				}else{
+ 					$.messager.alert("系统提示","系统繁忙，请稍后再操作","warning");
+ 				}
+ 			}
+		});	
+  
+ 	}
+	//注册成功返回登录页面
+	function login(){
+		window.location.href="login.html";
+	}
+	</script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

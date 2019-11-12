@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.SortingStationInfoDao">
+	<select id="findSortStationNames" resultType="SortingStationInfo">
+		select
+			ss_id,
+			<!-- s_usid, -->
+			ss_name
+			<!-- ss_state,
+			sg_id,
+			ss_date,
+			ss_capacity,
+			ss_address,
+			ss_coordinate,
+			remark,
+			delflag,
+			opt_id,
+			optime -->
+		from
+			t_sortingstationinfo
+		where
+			delflag = 0
+	</select>
+
+	<select id="findSortStationIdByName" parameterType="String" resultType="Integer">
+		select
+			ss_id
+		from
+			t_sortingstationinfo
+		where
+			delflag = 0
+		and
+			ss_name=#{ss_name}
+	</select>
+	
+	<select id="findSortStationNameById" parameterType="Integer" resultType="String">
+		select
+			ss_name
+		from
+			t_sortingstationinfo
+		where
+			delflag = 0
+		and
+			ss_id=#{ss_id}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

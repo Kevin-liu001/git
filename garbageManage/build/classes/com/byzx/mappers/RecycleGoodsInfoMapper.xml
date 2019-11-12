@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.RecycleGoodsInfoDao">
+	<select id="findAllRecycleGoodsInfo" parameterType="Integer" resultType="RecycleGoodsInfo">
+		select
+			sg_gid,
+			allocation_num,
+			inventory_num,
+			use_num,
+			scrap_num,
+			delflag,
+			optid,
+			optime,
+			remark,
+			state
+		from
+			t_recyclematerials
+		where
+			delflag = 0
+		and
+			sg_id=#{rsid}
+	</select>
+	
+	<select id="findAllRecycleGoodsId" resultType="RecycleGoodsInfo">
+		select
+			sg_gid
+		from
+			t_recyclematerials
+		where
+			delflag = 0
+		and
+			state = 0
+	</select>
+	<insert id="addRecycleGoodsInfo" parameterType="RecycleGoodsInfo">
+		insert into
+			t_recyclematerials(
+				sg_gid,
+				sg_id,
+				allocation_num,
+				inventory_num,
+				use_num,
+				scrap_num,
+				delflag,
+				optid,
+				optime,
+				remark,
+				state
+			)values(
+				#{sg_gid},
+				#{sg_id},
+				#{allocation_num},
+				#{inventory_num},
+				#{use_num},
+				#{scrap_num},
+				#{delflag},
+				#{optid},
+				#{optime},
+				#{remark},
+				#{state}
+			)
+	</insert>
+	
+	<delete id="deleteRecycleGoodsInfo" parameterType="Integer">
+		update
+			t_recyclematerials
+		set
+			delflag = 1
+		where
+			sg_id=#{rsid}
+	</delete>
+	
+	<update id="updateRecycleGoods" parameterType="RecycleGoodsInfo">
+		update
+			t_recyclematerials
+		set
+			sg_id=#{sg_id},
+			allocation_num=#{allocation_num},
+			inventory_num=#{inventory_num},
+			use_num=#{use_num},
+			scrap_num=#{scrap_num},
+			delflag=#{delflag},
+			optid=#{optid},
+			optime=#{optime},
+			remark=#{remark},
+			state=#{state}
+		where
+			sg_gid=#{sg_gid}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

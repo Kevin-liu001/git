@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.CommunInfoDao">
+
+	<resultMap type="CommunInfo"  id="CommunInfoResultMap" >
+		<id column="cm_id" property="cm_id"/>
+		<result column="b_id" property="b_id"></result>
+		<result column="cm_name" property="cm_name"></result>
+		<result column="cm_address" property="cm_address"></result>
+		<result column="cm_point" property="cm_point"></result>
+		<result column="cm_area" property="cm_area"></result>
+		<result column="cm_range" property="cm_range"></result>
+		<result column="cm_population" property="cm_population"></result>
+		<result column="bidding" property="bidding"></result>
+		<result column="cm_remark" property="cm_remark"></result>
+		<result column="delflag" property="delflag"></result>
+		<result column="createtime" property="createtime"></result>
+		<result column="remark" property="remark"></result>
+		<collection property="buildInfo" column="cm_id" ofType="BuildInfo" select="com.byzx.dao.BuildInfoDao.findAllBuildInfo" > 
+		</collection>
+	</resultMap>
+	
+	<resultMap type="CommunInfo"  id="CommunCollecResultMap" >
+		<id column="cm_id" property="cm_id"/>
+		<result column="b_id" property="b_id"></result>
+		<result column="cm_name" property="cm_name"></result>
+		<result column="cm_address" property="cm_address"></result>
+		<result column="cm_point" property="cm_point"></result>
+		<result column="cm_area" property="cm_area"></result>
+		<result column="cm_range" property="cm_range"></result>
+		<result column="cm_population" property="cm_population"></result>
+		<result column="bidding" property="bidding"></result>
+		<result column="cm_remark" property="cm_remark"></result>
+		<result column="delflag" property="delflag"></result>
+		<result column="createtime" property="createtime"></result>
+		<result column="remark" property="remark"></result>
+		<collection property="collectorInfo" column="rsid" ofType="CollectorInfo" select="com.byzx.dao.CollectorInfoDao.findAllCollectorInfo" > 
+		</collection>
+	</resultMap>
+	<select id="findAllCommunInfo" resultMap="CommunCollecResultMap">
+		select
+			cm_id,
+			rsid,
+			cm_name,
+			cm_address,
+			cm_point,
+			cm_area,
+			cm_range,
+			cm_population,
+			cm_remark,
+			creatTime,
+			delflag,
+			bidding,
+			state,
+			optid
+		from
+			t_communi
+		where 
+			delflag = 0
+	</select>
+	
+	<select id="findAllCommunInfoByPoint" parameterType="String"  resultMap="CommunInfoResultMap">
+		select
+			cm_id,
+			rsid,
+			cm_name,
+			cm_address,
+			cm_point,
+			cm_area,
+			cm_range,
+			cm_population,
+			cm_remark,
+			creatTime,
+			delflag,
+			bidding,
+			state,
+			optid
+		from
+			t_communi
+		where 
+			cm_point=#{cm_point}
+	</select>
+	
+	<select id="findCommunNameById"	parameterType="Integer" resultType="String">
+		select
+			cm_name
+		from
+			t_communi
+		where
+			delflag =0 
+		and
+			rsid=#{rsid}
+	</select>
+	
+	<select id="findCommunIdByName" parameterType="String" resultType="Integer">
+		select
+			cm_id
+		from
+			t_communi
+		where
+			delflag = 0
+		and
+			cm_name=#{plot_name}
+	</select>
+
+	<select id="findAllCommunInfoName" resultType="CommunInfo">
+		select
+			cm_id,
+			cm_name
+		from
+			t_communi
+		where
+			delflag = 0
+	</select>
+	
+	
+	<insert id="saveCommunInfo" parameterType="CommunInfo">
+		insert into
+			t_communi(
+				rsid,
+				cm_name,
+				cm_address,
+				cm_point,
+				cm_area,
+				cm_range,
+				cm_population,
+				cm_remark,
+				creatTime,
+				delflag,
+				bidding,
+				state,
+				optid
+			)values(
+				#{rsid},
+				#{cm_name},
+				#{cm_address},
+				#{cm_point},
+				#{cm_area},
+				#{cm_range},
+				#{cm_population},
+				#{cm_remark},
+				#{creatTime},
+				#{delflag},
+				#{bidding},
+				#{state},
+				#{optid}
+			)
+	</insert>
+	
+	<select id="findRecycleNames" resultType="StandbyInfo">
+		select
+			rsid,
+			rsname
+		from
+			t_recyclestationinfo
+		where 
+			delflag=0
+	</select>
+	
+	
+	<select id="getCommunInfoMaxId" resultType="Integer">
+		select max(cm_id) from t_communi where delflag=0;
+	</select>
+	
+	
+	
+	<update id="deleteCommunInfo" parameterType="Integer"> 
+		update 
+			t_communi
+		set
+			delflag=1,
+			bidding='否'
+		where
+			cm_id=#{cm_id}
+	</update>
+	
+	<update id="updateCommunInfo" parameterType="CommunInfo"> 
+		update 
+			t_communi
+		set
+			rsid=#{rsid},
+			cm_name=#{cm_name},
+			cm_address=#{cm_address},
+			cm_point=#{cm_point},
+			cm_area=#{cm_area},
+			cm_range=#{cm_range},
+			cm_population=#{cm_population},
+			cm_remark=#{cm_remark}
+		where
+			cm_id=#{cm_id}
+	</update>
+</mapper>

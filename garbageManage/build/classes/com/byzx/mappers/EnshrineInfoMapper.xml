@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byzx.dao.EnshrineInfoDao">
+
+
+	<select id="findEnshrineInfo" parameterType="Map" resultType="EnshrineInfo">
+		select 
+			warehous_id,
+			warehous_name,
+			classes,
+			weight,
+			s_usid,
+			collect,
+			remark,
+			state,
+			opt_id,
+			delflag	
+		from 
+			t_enshrineinfo
+		where 
+			delflag=0 
+		<if test="searchByName!=null">
+			and warehous_name like concat('%',#{searchByName},'%')
+		</if>
+		order by 
+			collect desc
+		limit #{pageBean.start},#{pageBean.rows}
+	</select>
+	
+	<select id="findAllEnshrineInfoCount" parameterType="Map" resultType="Integer">
+		select 
+			count(*) 
+		from 
+			t_enshrineinfo 
+		where 
+			delflag=0 
+	</select>
+	
+	<insert id="saveEnshrineInfo" parameterType="EnshrineInfo">
+		insert into
+			t_enshrineinfo(
+				warehous_name,
+				classes,
+				weight,
+				s_usid,
+				collect,
+				remark,
+				state,
+				opt_id,
+				delflag	
+			)
+		values(
+			#{warehous_name},
+			#{classes},
+			#{weight},
+			#{s_usid},
+			#{collect},
+			#{remark},
+			#{state},
+			#{opt_id},
+			#{delflag}
+		)
+	</insert>
+	
+	<select id="findEnshrineInfoByUName" parameterType="String" resultType="Integer">
+		select count(warehous_name) from t_enshrineinfo where delflag=0 and warehous_name=#{warehous_name}
+	</select>
+	
+	<update id="updateEnshrineInfo" parameterType="EnshrineInfo">
+		update
+			t_enshrineinfo
+		set
+			warehous_id=#{warehous_id},
+			warehous_name=#{warehous_name},
+			classes=#{classes},
+			weight=#{weight},
+			remark=#{remark}
+		where
+			warehous_id=#{warehous_id}
+	</update>
+	
+	<update id="deleteEnshrineInfo" parameterType="Integer">
+		update
+			t_enshrineinfo
+		set
+			delflag=1
+		where
+			warehous_id=#{warehous_id}
+	</update>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

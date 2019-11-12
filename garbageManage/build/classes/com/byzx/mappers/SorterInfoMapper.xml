@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.byzx.dao.SorterInfoDao">
+
+	
+<resultMap type="SorterInfo" id="resultSorterInfo">
+	<id property="s_usid" column="s_usid"/>
+	<result property="ss_id" column="ss_id"/>
+	<result property="sorter_jobNum" column="sorter_jobNum"/>
+	<result property="sorter_busy" column="sorter_busy"/>
+	<result property="sorter_work" column="sorter_work"/>
+	<result property="sorter_workTop" column="sorter_workTop"/>
+	<result property="state" column="state"/>
+	<result property="delflag" column="delflag"/>
+	<result property="optime" column="optime"/>
+	<result property="remark" column="remark"/>
+	<result property="opt_id" column="opt_id"/>
+</resultMap>
+
+<select id="findAllSSByAddress" parameterType="Integer" resultMap="resultSorterInfo">
+
+		select 
+			sorter_jobNum,
+			ss_id,
+			s_usid,
+			sorter_busy,
+			sorter_work,
+			sorter_workTop,
+			remark,
+			state,
+			delflag,
+			opt_id,
+			optime
+		from
+			t_sorterinfo
+		where
+			delflag=0
+		and
+			ss_id=#{ss_id}
+	</select>
+	
+	<insert id="addSorterInfo" parameterType="SorterInfo" >
+		insert into t_sorterinfo(
+			ss_id,
+			
+			sorter_jobNum,
+			sorter_busy,
+			sorter_work,
+			sorter_workTop,
+			remark,
+			state,
+			delflag,
+			opt_id,
+			optime)
+		values(
+			#{ss_id},
+			#{sorter_jobNum},
+			#{sorter_busy},
+			#{sorter_work},
+			#{sorter_workTop},
+			#{remark},
+			#{state},
+			#{delflag},
+			#{opt_id},
+			#{optime}
+		)
+</insert>
+
+<update id="deleteSorterInfoBySs_id" parameterType="Integer">
+	update
+			t_sorterinfo
+		set
+			delflag=1
+		where
+			s_usid=#{s_usid}
+
+</update>
+	<update id="updateSorterInfoBySs_id" parameterType="SorterInfo">
+	
+		update
+			t_sorterinfo
+		set
+			sorter_workTop=#{sorter_workTop},
+			sorter_busy=#{sorter_busy},
+			sorter_work=#{sorter_work},
+			remark=#{remark}
+		where
+			s_usid=#{s_usid}
+	</update>
+
+</mapper>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+        <title>垃圾分类信息管理系统</title>
+        <link rel="stylesheet" href="../fonts/iconfont.css"/>
+        <link rel="stylesheet" href="../css/font.css"/>
+        <link rel="stylesheet" href="../css/mui.css"/>
+        <link rel="stylesheet" href="../css/weui.min.css"/>
+        <link rel="stylesheet" href="../css/jquery-weui.min.css"/>
+        <link rel="stylesheet" href="../css/animate.css"/>
+        <link rel="stylesheet" href="../css/pages/login.css"/>
+        <script type="text/javascript" src="../js/jquery.min.js"></script>
+        <script type="text/javascript">
+        /* 触发注册跳转事件 */
+	    	function register(){
+	    		window.location.href="register.html";
+	    	}
+        /* 触发登录按钮事件*/
+			function login(){
+				var r_name=$("#r_name").val();
+				var user_pwd=$("#r_password").val();
+				var yzm=$("#yzm").val();
+				if(r_name==null||r_name==""){
+					$("#massagers").html("*用户名不能为空")
+				}else if(user_pwd==null||user_pwd==""){
+					$("#massagers").html("*密码不能为空");
+				}else if(yzm==null||yzm==""){
+					$("#massagers").html("*验证码不能为空");
+				}else{
+					$("#form1").submit();
+				}
+			}
+			/* 光标移开验证事件 */
+			$(function(){
+				var r_name=$("#r_name").val();
+				var user_pwd=$("#r_password").val();
+				var yzm=$("#yzm").val();
+				
+				$("#r_name").blur(function(){
+					if(r_name!=null||r_name!=""){
+						$("#massagers").html("请输入用户信息");
+					}
+				});
+				$("#r_password").blur(function(){
+					if(user_pwd!=null||user_pwd!=""){
+						$("#massagers").html("请输入用户信息");
+					}
+				});
+				$("#yzm").blur(function(){
+					if(yzm!=null||yzm!=""){
+						$("#massagers").html("请输入用户信息");
+					}
+				});
+				
+				var error=getQueryString("error");
+				var yzm=getQueryString("yzm");
+				var r_name=getQueryString("r_name");
+				var r_password=getQueryString("r_password");
+				if(yzm=="null"){
+					yzm="";
+				}
+				if(r_name=="null"){
+					r_name="";
+				}
+				if(r_password=="null"){
+					r_password="";
+				}
+				if(error==1){
+					$("#massagers").html("*验证码错误");
+					$("#r_name").val(r_name);
+					$("#r_password").val(r_password);
+					$("#yzm").val(yzm);
+				}
+				if(error==2){
+					$("#massagers").html("*用户名或者密码错误");
+					$("#r_name").val(r_name);
+					$("#r_password").val(r_password);
+					$("#yzm").val(yzm);
+				}
+				
+			});
+			/* 点击切换验证码 */
+			function loadImage(){
+				document.getElementById("randImage").src="../images/image.jsp?"+Math.random();
+			}
+			
+			function getQueryString(name){
+				 var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+				 var url=decodeURI(decodeURI(window.location.search));	//获取返回路径
+				 var r=url.substr(1).match(reg);
+				 if(r!=null){
+					 return unescape(r[2]);
+				 }
+				 return null;
+			}
+			
+		</script>
+    </head>
+    <body>
+        <div class="header">
+        	<img src="../images/login_logo_w.png">
+            <h2>垃圾分类居民用户登录平台</h2>
+            <div class="alert alert-error" style="color: red;">
+				 <i class="iconfont">&#xe62e;</i>
+				 <span id="massagers" style="font-size: 16px;font-weight: bold;">请输入用户信息</span>
+			</div>
+		</div>
+        <div class="login-wrap">
+            <div class="login-box">
+                <form action="../userLogin/login1.do" method="post" id="form1">
+                <div class="input-wrap">               	
+					<input type="text" name="r_name" id="r_name" placeholder="请输入用户名">
+				</div>
+				<div class="input-wrap">									
+					<input type="password" name="r_password" id="r_password" placeholder="请输入密码">
+				</div>
+				<div class="input-wrap">													
+					<input type="text" onkeydown="if(event.keyCode==13)form1.submit()" maxlength="4" name="yzm" id="yzm" placeholder="验证码" style="height: 50px; width: 150px">	&nbsp;&nbsp;&nbsp;&nbsp;										
+					<img title="换一张试试" onclick="javascript:loadImage()" src="../images/image.jsp" id="randImage" name="randImage" style="width: 114px;height: 41px;"/>					
+				</div>    				
+                </form>
+            </div>
+            <div class="btns">
+                <a href="javascript:;" class="current">忘记密码</a>
+                <a href="javascript:login()" >登录</a>
+            </div> 
+            <a href="javascript:register()" class="weui_btn login-btn weui_btn_primary">立即注册</a>                 
+        </div>       
+			<div class="footer">
+					<a href="javascript:;">关于我们</a>
+					<a href="javascript:;">法律声明</a>
+					<a href="javascript:;">服务条款</a>
+					<a href="javascript:;">联系方式</a>
+			</div>				
+    </body>
+</html>

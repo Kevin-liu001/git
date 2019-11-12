@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>投标管理</title>
+		<link href="../css/base.css" rel="stylesheet">
+		<link rel="stylesheet" href="../custom/uimaker/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../custom/uimaker/icon.css">
+		<link rel="stylesheet" href="../css/providers1.css">
+		<script type="text/javascript" src="../custom/jquery.min.js"></script>
+	    <script type="text/javascript" src="../custom/jquery.easyui.min.js"></script>
+	    <script type="text/javascript" src="../custom/easyui-lang-zh_CN.js"></script>
+	</head>
+	<body>
+		<!-- 角色列表start -->
+		<div class="container" style="width:100%;">
+	       <table class="easyui-datagrid"  id="dgBiddDocumentInfo" style="width:100%;" data-options="
+	                rownumbers:true,
+	                pagination:true,
+	                fitColumns:true,
+	                striped:true,
+	                collapsible:true,
+	                toolbar:'#tb',
+	                pageSize:10,
+	                url:'../biddDocumentInfo/findAllBiddDocumentInfo.do'">
+	            <thead>
+	                <tr>
+	                	<th field="ck" checkbox="true" align="center" width="50px"></th>
+	                    <th field="projectTitle" align="center" width="50px">小区名称</th>
+	                    <th field="serialNumber" align="center" width="50px">项目名称</th>
+	                    <th field="title" align="center" width="50px">招标编号</th>
+	                    <th field="sort" align="center" width="60px">合同名称</th>
+	                    <th field="bidingTime" align="center" width="50px">招标时间</th>
+	                    <th field="bidingType" align="center" width="50px">招标类别</th>
+	                    <th field="creatime" align="center" width="50px">中标时间</th>
+	                    <th field="bidding" align="center" width="60px">是否中标</th>
+	                    <th field="Remark" align="center" width="60px">备注</th>
+	                </tr>
+	            </thead>
+	        </table>
+	      <!-- datagrid工具栏（增删改查）start -->
+	      <div id="tb" style="padding:0 30px;width:100%;">
+	        <div class="opt-buttons" style="width:100%;">
+	            <a href="javascript:newBiddDocumentInfo()" class="easyui-linkbutton" data-options="selected:true">新增</a>
+	            <a href="javascript:updateBiddDocumentInfo()" class="easyui-linkbutton">修改</a>
+	            <a href="javascript:deleteBiddDocumentInfo()" class="easyui-linkbutton">删除</a>
+	        	<div class="conditions" style="float:right;margin-right: 20px">
+		          	<span class="con-span">物资类型: </span>
+		          	<input class="easyui-textbox" type="text" name="s_roleName"  id="s_roleName" style="width:166px;height:35px;line-height:35px;"></input>
+		          	 <a href="javascript:searchBiddDocumentInfoByName()" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
+	       		</div>
+	        </div> 
+	      </div>
+	      <!-- datagrid工具栏（增删改查）end -->
+    	</div>
+    	<!-- 角色列表end -->
+    	
+    	<!-- 角色操作form表单—START -->
+	     <div id="dlg-buttons">
+		      <a href="javascript:saveBiddDocumentInfo()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+		      <a href="javascript: closeGoodsDetailAddDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+		 </div> 
+	    
+	   	<div id="dlgBiddDocumentInfo" class="easyui-dialog" style="width: 570px;height: 350px;padding: 10px 20px" closed="true" buttons="#dlg-buttons" closable="false">
+		     <form id="formBiddDocumentInfo" method="post">
+		           <table cellspacing="5px">
+			          <p><input type="hidden" id="bd_id" name="bd_id" /></p>
+			          <tr>
+			               <td>小区名称：</td>
+			               <td><input type="text" id="projectTitle" name="projectTitle" class="easyui-validatebox" required="true"/></td>
+			               <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			               <td>项目名称：</td>
+			               <td><input type="text" id="serialNumber" name="serialNumber" class="easyui-validatebox" required="true"/></td>
+			          </tr>
+			          <tr>
+			               <td>招标编号：</td>
+			               <td><input type="text" id="title" name="title" class="easyui-validatebox" required="true"/></td>
+			               <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			               <td>合同名称：</td>
+			               <td><input type="text" id="sort" name="sort" class="easyui-validatebox" required="true"/></td>
+			          </tr>
+			          <tr>
+			               <td>招标时间：</td>
+			               <td><input type="date" id="bidingTime" name="bidingTime" class="easyui-validatebox" required="true"/></td>
+			               <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			               <td>招标类别：</td>
+			               <td><input type="text" id="bidingType" name="bidingType" class="easyui-validatebox" required="true"/></td>
+			          </tr>
+			          <tr>
+			               <td>中标时间：</td>
+			               <td><input type="date" id="creatime" name="creatime" class="easyui-validatebox" required="true"/></td>
+			               <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			               <td>是否中标：</td>
+			               <td><input type="text" id="bidding" name="bidding" class="easyui-validatebox" required="true"/></td>
+			          </tr>
+			           <tr>
+			                <td>备注：</td>
+			                <td colspan="4">
+			                       <textarea rows="7" cols="50" name="Remark" id="Remark"></textarea>
+			                </td>
+			           </tr>
+			     </table>
+	        </form>
+		  </div>
+		  
+  		
+	</body>
+	<script type="text/javascript">
+		var newBiddDocumentInfoUrl="../biddDocumentInfo/saveBiddDocumentInfo.do";
+		var updateBiddDocumentInfoUrl="../biddDocumentInfo/updateBiddDocumentInfo.do"
+		var urls="";
+		/* 角色的搜索按钮 */
+ 		function searchBiddDocumentInfoByName() {
+			alert(12)
+			$("#dgBiddDocumentInfo").datagrid("load",{
+				s_roleName:$("#s_roleName").val()
+			})
+		}
+		/* 添加角色的按钮 */
+ 		function newBiddDocumentInfo(){
+ 			$("#dlgBiddDocumentInfo").dialog("open").dialog("setTitle","新增物资类型");
+ 			urls=newBiddDocumentInfoUrl;
+ 		}
+		/* 添加角色的确认按钮 */
+		function saveBiddDocumentInfo(){
+ 			$("#formBiddDocumentInfo").form("submit",{
+ 				url:urls,
+ 	 			onsubmit:function(){
+ 	 				return $(this).form("validate");
+ 	 			},
+ 	 			success:function(result){
+ 	 				var result=eval('('+result+')');
+ 	 				console.log(result.msg);
+ 	 				if(result.msg){
+ 	 					$.messager.alert("系统提示","保存成功","info");
+ 	 					closeGoodsDetailAddDialog();
+ 	 					$("#dgBiddDocumentInfo").datagrid("reload");
+ 	 				}else{
+ 	 					$.messager.alert("系统提示","系统繁忙，请稍后再操作","info");
+ 	 				}		
+ 	 			}
+ 			})
+ 		}
+		/* 添加角色的关闭按钮 及清除表单*/
+		function closeGoodsDetailAddDialog(){
+ 			$("#formBiddDocumentInfo").form("clear");
+ 			$("#dlgBiddDocumentInfo").dialog("close");
+ 		}
+		/* 添加角色时提示该角色存不存在    */
+ 		$("#role_name").blur(function(){
+ 			var role_name=$("#role_name").val();
+ 			$.ajax({
+ 				url:"../biddDocumentInfo/findBiddDocumentInfoByRName.do",
+ 				type:"post",
+ 				dataType:"json",
+ 				data:{role_name:role_name},
+ 				success:function(result){
+ 					if(result.msg){
+ 						$.messager.alert("系统提示","当前角色已存在","info");
+ 						$("#role_name").val("");
+ 					}
+ 				}
+ 			});
+ 		});
+		/* 修改角色按钮 */
+ 		function updateBiddDocumentInfo(){
+ 			var rows=$("#dgBiddDocumentInfo").datagrid("getSelections");
+ 			alert(rows.length);
+ 			if(rows.length!=1){
+ 				$.messager.alert("系统提示","请选择一个物资","warning");
+ 				return false;
+ 			}
+ 			$("#formBiddDocumentInfo").form("load",rows[0]);
+ 			$("#dlgBiddDocumentInfo").dialog("open").dialog("setTitle","修改物资信息");
+ 			urls=updateBiddDocumentInfoUrl;
+ 		}
+		/* 删除角色 */
+ 		function deleteBiddDocumentInfo(){
+ 			var rows=$("#dgBiddDocumentInfo").datagrid("getSelections");
+ 			alert(rows.length);
+ 			if(rows.length==0){
+ 				$.messager.alert("系统提示","请选择需要删除的物资","warning");
+ 				return false;
+ 			}
+ 			var role_ids=[];
+ 			$.each(rows,function(index,row){
+ 				role_ids.push(row.bd_id);
+ 			});
+ 			var roleIds=role_ids.join(",");
+ 			alert(roleIds);
+ 			$.messager.confirm("系统提示","确认删除<font size=5 color=red>'" + rows.length + "'</font>个物资？",function(r){
+ 				if(r){
+ 					$.ajax({
+ 						url:"../biddDocumentInfo/deleteBiddDocumentInfo.do",
+ 						type:"post",
+ 						dataType:"json",
+ 						data:{roleIds:roleIds},
+ 						success:function(result){
+ 							if(result.msg){
+ 		 	 					$.messager.alert("系统提示","删除成功","info");
+ 		 	 					closeGoodsDetailAddDialog();
+ 		 	 					$("#dgBiddDocumentInfo").datagrid("reload");
+ 		 	 				}else{
+ 		 	 					$.messager.alert("系统提示","系统繁忙，请稍后再操作","info");
+ 		 	 				}	
+ 						}
+ 					});
+ 				}
+ 			});
+ 		}
+		function closeAuthDialog(){
+			$("#dlgMenuInfo").dialog("close");
+		}
+ 	</script>
+</html>

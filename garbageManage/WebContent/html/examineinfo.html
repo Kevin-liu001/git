@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>质量考核</title>
+		<link href="../css/base.css" rel="stylesheet">
+		<link rel="stylesheet" href="../custom/uimaker/easyui.css">
+		<link rel="stylesheet" type="text/css" href="../custom/uimaker/icon.css">
+		<link rel="stylesheet" href="../css/providers1.css">
+		<script type="text/javascript" src="../custom/jquery.min.js"></script>
+	    <script type="text/javascript" src="../custom/jquery.easyui.min.js"></script>
+	    <script type="text/javascript" src="../custom/easyui-lang-zh_CN.js"></script>
+	</head>
+<body>
+ 	<div class="container" style="width:100%;">
+       <table class="easyui-datagrid"  id="dgExamineInfo" style="width:100%;"    data-options="
+                rownumbers:true,
+                singleSelect:false,
+                autoRowHeight:false,
+                pagination:true,
+                fitColumns:true,
+                striped:true,
+                collapsible:true,
+                toolbar:'#tb',
+                pageSize:10,
+                url:'../ExamineInfo/findAllExamineInfo.do'">
+            <thead>
+                <tr>
+                	<th field="ck" checkbox="true" align="center" width="50px"></th>
+                    <th field="examine_id" align="center" width="50px">考核编号</th>
+                    <th field="s_usid" align="center" width="50px">分拣人员</th>
+                    <th field="allot" align="center" width="50px">分配的质量</th>
+                    <th field="accomplish" align="center" width="50px">完成的质量</th>
+                    <th field="massDeviation" align="center" width="50px">质量偏差</th>
+                    <th field="budgetTime" align="center" width="50px">预算完成时间</th>
+                    <th field="realityTime" align="center" width="60px">实际完成时间</th>
+                    <th field="timeDeviation" align="center" width="60px">时间偏差</th>
+                    <th field="state" align="center" width="60px">状态</th>
+                    <th field="opt_id" align="center" width="60px">操作人员</th>
+                    <th field="delflag" align="center" width="60px">删除标记</th>
+                    <th field="optime" align="center" width="60px">登记时间</th>
+                    <th field="remark" align="center" width="60px">备注</th>
+                </tr>
+            </thead>
+        </table>
+      <div id="tb" style="padding:0 30px;width:100%;">
+        <div class="opt-buttons" style="width:100%;">
+            <a href="javascript:newExamineInfo()" class="easyui-linkbutton" data-options="selected:true">新增</a>
+            <a href="javascript:updateExamineInfo()" class="easyui-linkbutton">修改</a>
+            <a href="javascript:deleteExamineInfo()" class="easyui-linkbutton">删除</a>
+            <a href="#" class="easyui-linkbutton">导出</a>
+        	<div class="conditions" style="float:right;margin-right: 20px">
+	          	<span class="con-span">查询: </span>
+	          	<input class="easyui-textbox" type="text" name="searchByName"  id="searchByName" style="width:166px;height:35px;line-height:35px;"></input>
+	          	 <a href="javascript:searchExamineInfoByName()" class="easyui-linkbutton" iconCls="icon-search" data-options="selected:true">查询</a>
+       		</div>
+        </div>
+      </div>
+    </div> 
+    
+    <!-- 用户操作form表单—START -->
+	     <div id="dlg-buttons">
+		      <a href="javascript:saveExamineInfo()" class="easyui-linkbutton" iconCls="icon-ok">保存</a>
+		      <a href="javascript: closeExamineAddDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+		 </div> 
+	    
+	   	<div id="dlgExamineInfo" class="easyui-dialog" style="width: 570px;height: 350px;padding: 10px 20px" closed="true" buttons="#dlg-buttons" closable="false">
+		    <form id="formExamineInfo" method="post">
+		          <table cellspacing="5px">
+			         <p><input type="hidden" id="warehous_id" name="warehous_id" /></p>
+			        
+			         <tr>
+			              <td>备注：</td>
+			              <td colspan="4">
+			                     <textarea rows="7" cols="50" name="remark" id="remark"></textarea>
+			              </td>
+			         </tr>
+			         
+			    </table>
+	       </form>
+	   </div>
+	  <!-- 用户操作form表单—END -->  
+	  
+    
+    
+  
+    <div id="dlg2-buttons">
+	      <a href="javascript:chooseRole()" class="easyui-linkbutton" iconCls="icon-ok">确定</a>
+	      <a href="javascript:closeRoleDialog()" class="easyui-linkbutton" iconCls="icon-cancel">关闭</a>
+	</div>  
+	
+	<script type="text/javascript">
+	var newEnshrineInfoUrl="../examineInfo/saveExamineInfo.do";
+	var updateUserInfoUrl="../examineInfo/updateExamineInfo.do"
+	var urls="";
+		//查询按钮
+		function searchExamineInfoByName() {
+		$("#dgExamineInfo").datagrid("load",{
+			searchByName:$("#searchByName").val()
+			})
+		}
+ 		
+ 		//修改数据
+ 		function updateExamineInfo(){
+ 			var rows=$("#dgExamineInfo").datagrid("getSelections");
+ 			if(rows.length!=1){
+ 				$.messager.alert("系统提示","请选择一条数据","warning");
+ 				return false;
+ 			}
+ 			$("#formExamineInfo").form("load",rows[0]);
+ 			$("#dlgExamineInfo").dialog("open").dialog("setTitle","修改数据信息");
+ 			urls= updateEnshrineInfoUrl;
+ 		}
+ 		
+ 		
+ 		//删除物品
+ 		function deleteExamineInfo(){
+ 			var rows=$("#dgExamineInfo").datagrid("getSelections");
+ 			if(rows.length==0){
+ 				$.messager.alert("系统提示","请选择需要删除的数据","warning");
+ 				return false;
+ 			}
+ 			var examine_ids=[];
+ 			$.each(rows,function(index,row){
+ 				examine_ids.push(row.examine_id);
+ 			});
+ 			var examineIds=warehous_ids.join(",");
+ 			$.messager.confirm("系统提示","确认删除<font size=5 color=red>'" + rows.length + "'</font>该数据吗？",function(r){
+ 				if(r){
+ 					$.ajax({
+ 						url:"../examineInfo/deleteExamineInfo.do",
+ 						type:"post",
+ 						dataType:"json",
+ 						data:{examineIds:examineIds},
+ 						success:function(result){
+ 							if(result.msg){
+ 		 	 					$.messager.alert("系统提示","删除成功","info");
+ 		 	 					closeEnshrineAddDialog();
+ 		 	 					$("#dgExamineInfo").datagrid("reload");
+ 		 	 				}else{
+ 		 	 					$.messager.alert("系统提示","系统繁忙，请稍后再操作","info");
+ 		 	 				}	
+ 						}
+ 					});
+ 				}
+ 			});
+ 		}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</script>
+	</body>
+</html>
